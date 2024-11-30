@@ -5,6 +5,7 @@
 
 #include "Executor.h"
 
+// 测试初始化
 TEST(ExecutorTest, Initialization)
 {
     Executor executor;
@@ -19,11 +20,12 @@ TEST(ExecutorTest, Initialization)
     EXPECT_EQ(heading, 'E');
 }
 
+// 测试前进
 TEST(ExecutorTest, MoveForward)
 {
     Executor executor;
     executor.Init(1, 2, 'E');
-    executor.DoCommands("M");
+    executor.Move("M");
 
     int32_t x, y;
     char heading;
@@ -34,11 +36,12 @@ TEST(ExecutorTest, MoveForward)
     EXPECT_EQ(heading, 'E');
 }
 
+// 测试左转
 TEST(ExecutorTest, TurnLeft)
 {
     Executor executor;
     executor.Init(1, 2, 'E');
-    executor.DoCommands("L");
+    executor.Move("L");
 
     int32_t x, y;
     char heading;
@@ -49,11 +52,12 @@ TEST(ExecutorTest, TurnLeft)
     EXPECT_EQ(heading, 'N');
 }
 
+// 测试右转
 TEST(ExecutorTest, TurnRight)
 {
     Executor executor;
     executor.Init(1, 2, 'E');
-    executor.DoCommands("R");
+    executor.Move("R");
 
     int32_t x, y;
     char heading;
@@ -64,11 +68,12 @@ TEST(ExecutorTest, TurnRight)
     EXPECT_EQ(heading, 'S');
 }
 
+// 测试执行长命令
 TEST(ExecutorTest, ExecuteCommands)
 {
     Executor executor;
     executor.Init();
-    executor.DoCommands("MMRMMRMM");
+    executor.Move("MMRMMRMM");
 
     int32_t x, y;
     char heading;
@@ -79,12 +84,13 @@ TEST(ExecutorTest, ExecuteCommands)
     EXPECT_EQ(heading, 'S');
 }
 
+// 测试复杂命令
 TEST(ExecutorTest, ComplexCommands)
 {
     Executor executor;
     executor.Init();
 
-    executor.DoCommands("MLMLMLML");
+    executor.Move("MLMLMLML");
 
     int32_t x, y;
     char heading;
@@ -95,12 +101,13 @@ TEST(ExecutorTest, ComplexCommands)
     EXPECT_EQ(heading, 'N');
 }
 
+// 测试混合命令
 TEST(ExecutorTest, MixedCommands)
 {
     Executor executor;
     executor.Init(1, 1, 'W');
 
-    executor.DoCommands("MRMLMMRMM");
+    executor.Move("MRMLMMRMM");
 
     int32_t x, y;
     char heading;
@@ -111,12 +118,13 @@ TEST(ExecutorTest, MixedCommands)
     EXPECT_EQ(heading, 'N');
 }
 
+// 测试快速模式下的移动
 TEST(ExecutorTest, FastMove)
 {
     Executor executor;
     executor.Init();
 
-    executor.DoCommands("FMLMLMFR");
+    executor.Move("FMLMLMFR");
 
     int32_t x, y;
     char heading;

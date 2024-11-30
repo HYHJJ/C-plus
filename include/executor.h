@@ -22,35 +22,40 @@ public:
         this->heading = static_cast<Direction>(heading);
     }
 
-    void DoCommands(string commands)
+    void Move(string commands)
     {
-        is = 0;
         for (char command : commands) {
-            if (!IsFast(command)) {
+            if (is) {
                 switch (command) {
                 case 'M':
-                    MoveForward();
+                    MoveForward{}.DoCommands(*this);
+                    MoveForward{}.DoCommands(*this);
                     break;
                 case 'L':
-                    TurnLeft();
+                    MoveForward{}.DoCommands(*this);
+                    TurnLeft{}.DoCommands(*this);
                     break;
                 case 'R':
-                    TurnRight();
+                    MoveForward{}.DoCommands(*this);
+                    TurnRight{}.DoCommands(*this);
+                    break;
+                case 'F':
+                    IsFast{}.DoCommands(*this);
                     break;
                 }
             } else {
                 switch (command) {
                 case 'M':
-                    MoveForward();
-                    MoveForward();
+                    MoveForward{}.DoCommands(*this);
                     break;
                 case 'L':
-                    MoveForward();
-                    TurnLeft();
+                    TurnLeft{}.DoCommands(*this);
                     break;
                 case 'R':
-                    MoveForward();
-                    TurnRight();
+                    TurnRight{}.DoCommands(*this);
+                    break;
+                case 'F':
+                    IsFast{}.DoCommands(*this);
                     break;
                 }
             }
@@ -60,69 +65,87 @@ public:
 private:
     int32_t x, y;
     Direction heading;
-    bool is;
+    bool is = 0;
 
-    bool IsFast(char cmd)
+    class ICommand
     {
-        if (is == 0 && cmd == 'F') {
-            is = 1;
-        } else if (is == 1 && cmd == 'F') {
-            is = 0;
-        }
-        return is;
-    }
+    public:
+        virtual ~ICommand() = default;
+        virtual void DoCommands(Executor& executor) = 0;
+    };
 
-    void MoveForward()
+    class IsFast final : public ICommand
     {
-        switch (heading) {
-        case N:
-            ++y;
-            break;
-        case S:
-            --y;
-            break;
-        case E:
-            ++x;
-            break;
-        case W:
-            --x;
-            break;
+    public:
+        void DoCommands(Executor& executor) override
+        {
+            executor.is = !executor.is;
         }
-    }
+    };
 
-    void TurnLeft()
+    class MoveForward final : public ICommand
     {
-        switch (heading) {
-        case N:
-            heading = W;
-            break;
-        case S:
-            heading = E;
-            break;
-        case E:
-            heading = N;
-            break;
-        case W:
-            heading = S;
-            break;
+    public:
+        void DoCommands(Executor& executor) override
+        {
+            switch (executor.heading) {
+            case N:
+                ++executor.y;
+                break;
+            case S:
+                --executor.y;
+                break;
+            case E:
+                ++executor.x;
+                break;
+            case W:
+                --executor.x;
+                break;
+            }
         }
-    }
+    };
 
-    void TurnRight()
+    class TurnLeft final : public ICommand
     {
-        switch (heading) {
-        case N:
-            heading = E;
-            break;
-        case S:
-            heading = W;
-            break;
-        case E:
-            heading = S;
-            break;
-        case W:
-            heading = N;
-            break;
+    public:
+        void DoCommands(Executor& executor) override
+        {
+            switch (executor.heading) {
+            case N:
+                executor.heading = W;
+                break;
+            case S:
+                executor.heading = E;
+                break;
+            case E:
+                executor.heading = N;
+                break;
+            case W:
+                executor.heading = S;
+                break;
+            }
         }
-    }
+    };
+
+    class TurnRight final : public ICommand
+    {
+    public:
+        void DoCommands(Executor& executor) override
+        {
+            switch (executor.heading) {
+            case N:
+                executor.heading = E;
+                break;
+            case S:
+                executor.heading = W;
+                break;
+            case E:
+                executor.heading = S;
+                break;
+            case W:
+                executor.heading = N;
+                break;
+            }
+        }
+    };
 };
