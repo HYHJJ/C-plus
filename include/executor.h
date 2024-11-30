@@ -24,17 +24,35 @@ public:
 
     void DoCommands(string commands)
     {
+        is = 0;
         for (char command : commands) {
-            switch (command) {
-            case 'M':
-                MoveForward();
-                break;
-            case 'L':
-                TurnLeft();
-                break;
-            case 'R':
-                TurnRight();
-                break;
+            if (!IsFast(command)) {
+                switch (command) {
+                case 'M':
+                    MoveForward();
+                    break;
+                case 'L':
+                    TurnLeft();
+                    break;
+                case 'R':
+                    TurnRight();
+                    break;
+                }
+            } else {
+                switch (command) {
+                case 'M':
+                    MoveForward();
+                    MoveForward();
+                    break;
+                case 'L':
+                    MoveForward();
+                    TurnLeft();
+                    break;
+                case 'R':
+                    MoveForward();
+                    TurnRight();
+                    break;
+                }
             }
         }
     }
@@ -42,6 +60,17 @@ public:
 private:
     int32_t x, y;
     Direction heading;
+    bool is;
+
+    bool IsFast(char cmd)
+    {
+        if (is == 0 && cmd == 'F') {
+            is = 1;
+        } else if (is == 1 && cmd == 'F') {
+            is = 0;
+        }
+        return is;
+    }
 
     void MoveForward()
     {

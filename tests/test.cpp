@@ -111,6 +111,22 @@ TEST(ExecutorTest, MixedCommands)
     EXPECT_EQ(heading, 'N');
 }
 
+TEST(ExecutorTest, FastMove)
+{
+    Executor executor;
+    executor.Init();
+
+    executor.DoCommands("FMLMLMFR");
+
+    int32_t x, y;
+    char heading;
+    executor.GetPositionAndHeading(x, y, heading);
+
+    EXPECT_EQ(x, -3);
+    EXPECT_EQ(y, 1);
+    EXPECT_EQ(heading, 'W');
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
